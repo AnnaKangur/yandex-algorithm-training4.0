@@ -15,7 +15,7 @@ class LossAndDerivatives:
         
         Comment: If Y is two-dimentional, average the error over both dimentions.
         """
-
+        
         return np.mean((X.dot(w) - Y)**2)
 
     @staticmethod
@@ -31,8 +31,7 @@ class LossAndDerivatives:
 
         Comment: If Y is two-dimentional, average the error over both dimentions.
         """
-
-        # YOUR CODE HERE    
+ 
         return np.mean(abs(X.dot(w) - Y))
 
     @staticmethod
@@ -45,9 +44,8 @@ class LossAndDerivatives:
 
         Computes the L2 regularization term for the weight matrix w.
         """
-        
-        # YOUR CODE HERE
-        return np.mean(w**2)
+ 
+        return np.sum(w**2)
 
     @staticmethod
     def l1_reg(w):
@@ -60,8 +58,7 @@ class LossAndDerivatives:
         Computes the L1 regularization term for the weight matrix w.
         """
 
-        # YOUR CODE HERE
-        return np.mean(abs(w))
+        return np.sum(np.absolute(w))
 
     @staticmethod
     def no_reg(w):
@@ -85,9 +82,17 @@ class LossAndDerivatives:
         Please mention, that in case `target_dimentionality` > 1 the error is averaged along this
         dimension as well, so you need to consider that fact in derivative implementation.
         """
+        revel = False
+        if Y.ndim == 1:
+            Y = Y.reshape(-1, 1)
+        if w.ndim == 1:
+            w = w.reshape(-1, 1)
+            revel = True
+        w_new = 2 * ( - Y.T @ X + w.T @ X.T @ X).T / (Y.shape[1] * Y.shape[0])
+        if revel:
+            w_new = w_new.ravel()
+        return w_new
 
-        # YOUR CODE HERE
-        return 
 
     @staticmethod
     def mae_derivative(X, Y, w):
@@ -104,9 +109,16 @@ class LossAndDerivatives:
         Please mention, that in case `target_dimentionality` > 1 the error is averaged along this
         dimension as well, so you need to consider that fact in derivative implementation.
         """
-
-        # YOUR CODE HERE
-        return 
+        revel = False
+        if Y.ndim == 1:
+            Y = Y.reshape(-1, 1)
+        if w.ndim == 1:
+            w = w.reshape(-1, 1)
+            revel = True
+        w_new = - 1 / (Y.shape[1] * Y.shape[0]) * X.T @ np.sign(Y - X @ w)
+        if revel:
+            w_new = w_new.ravel()
+        return w_new
 
     @staticmethod
     def l2_reg_derivative(w):
@@ -118,8 +130,7 @@ class LossAndDerivatives:
         Computes the L2 regularization term derivative w.r.t. the weight matrix w.
         """
 
-        # YOUR CODE HERE
-        return 
+        return 2 * w
 
     @staticmethod
     def l1_reg_derivative(w):
@@ -132,8 +143,7 @@ class LossAndDerivatives:
         Computes the L1 regularization term derivative w.r.t. the weight matrix w.
         """
 
-        # YOUR CODE HERE
-        return 
+        return np.sign(w)
 
     @staticmethod
     def no_reg_derivative(w):
@@ -141,4 +151,3 @@ class LossAndDerivatives:
         Simply ignores the derivative
         """
         return np.zeros_like(w)
-
